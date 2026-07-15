@@ -167,8 +167,8 @@ class MuapiClient:
             try:
                 res = requests.get(url, headers=self._headers())
                 if not res.ok:
-                    if res.status_code >= 500:
-                        continue  # transient upstream error, keep polling
+                    if res.status_code >= 500 or res.status_code == 429:
+                        continue  # transient upstream error or rate limit, keep polling
                     raise MuapiError(f"Poll failed: {res.status_code} {res.text[:200]}", res.status_code)
                 data = res.json()
                 status = str(data.get("status", "")).lower()
