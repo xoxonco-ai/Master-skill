@@ -81,9 +81,24 @@ class MuapiClient:
 
     def get_balance(self):
         """Return the account's remaining MuAPI credit balance."""
-        res = requests.get(f"{self.base_url}/api/v1/account/balance", headers=self._headers())
+        res = requests.get(f"{self.base_url}/api/v1/account/balance", headers=self._headers(), timeout=10)
         if not res.ok:
             raise MuapiError(f"Failed to fetch balance: {res.status_code} {res.text[:200]}", res.status_code)
+        return res.json()
+
+    def submit(self, model_endpoint, payload):
+        """Submit a generation request and return the raw response (contains request_id).
+
+        Public so library users can submit without polling (like the CLI's --no-wait).
+        """
+        res = requests.post(
+            f"{self.base_url}/api/v1/{model_endpoint}",
+            headers=self._headers(),
+            data=json.dumps(payload),
+            timeout=30,
+        )
+        if not res.ok:
+            raise MuapiError(f"MuAPI request failed: {res.status_code} {res.text[:200]}", res.status_code)
         return res.json()
 
     def generate(self, model_endpoint, payload, max_poll_attempts=None):
@@ -92,14 +107,7 @@ class MuapiClient:
         `payload` is passed through to MuAPI verbatim (prompt, aspect_ratio, ...).
         Returns a normalized dict: {request_id, status, url, outputs, raw}.
         """
-        res = requests.post(
-            f"{self.base_url}/api/v1/{model_endpoint}",
-            headers=self._headers(),
-            data=json.dumps(payload),
-        )
-        if not res.ok:
-            raise MuapiError(f"MuAPI request failed: {res.status_code} {res.text[:200]}", res.status_code)
-        submit = res.json()
+        submit = self.submit(model_endpoint, payload)
         request_id = submit.get("request_id") or submit.get("id")
         if not request_id:
             return self._normalize(None, submit)
@@ -107,7 +115,8 @@ class MuapiClient:
         return self._normalize(request_id, result)
 
     def generate_image(self, prompt, model=None, aspect_ratio=None, resolution=None,
-                       quality=None, image_url=None, images_list=None, seed=None):
+                       quality=None, image_url=None, images_list=None, seed=None,
+                       max_poll_attempts=120):
         """Text-to-image, or image-to-image when image_url/images_list is given."""
         if model is None:
             model = DEFAULT_MODELS["image_to_image"] if (image_url or images_list) else DEFAULT_MODELS["text_to_image"]
@@ -124,10 +133,11 @@ class MuapiClient:
             payload["image_url"] = image_url
         if seed is not None and seed != -1:
             payload["seed"] = seed
-        return self.generate(model, payload, max_poll_attempts=120)
+        return self.generate(model, payload, max_poll_attempts=max_poll_attempts)
 
     def generate_video(self, prompt=None, model=None, aspect_ratio=None, resolution=None,
-                       quality=None, duration=None, mode=None, image_url=None, images_list=None):
+                       quality=None, duration=None, mode=None, image_url=None, images_list=None,
+                       max_poll_attempts=None):
         """Text-to-video, or image-to-video when image_url is given."""
         if model is None:
             model = DEFAULT_MODELS["image_to_video"] if image_url else DEFAULT_MODELS["text_to_video"]
@@ -148,13 +158,14 @@ class MuapiClient:
             payload["image_url"] = image_url
         if images_list:
             payload["images_list"] = images_list
-        return self.generate(model, payload)
+        return self.generate(model, payload, max_poll_attempts=max_poll_attempts)
 
     def get_result(self, request_id):
         """Fetch the current result for a submitted request (single check)."""
         res = requests.get(
             f"{self.base_url}/api/v1/predictions/{request_id}/result",
             headers=self._headers(),
+            timeout=10,
         )
         if not res.ok:
             raise MuapiError(f"Failed to fetch result: {res.status_code} {res.text[:200]}", res.status_code)
@@ -165,7 +176,7 @@ class MuapiClient:
         for attempt in range(1, max_attempts + 1):
             time.sleep(self.poll_interval)
             try:
-                res = requests.get(url, headers=self._headers())
+                res = requests.get(url, headers=self._headers(), timeout=10)
                 if not res.ok:
                     if res.status_code >= 500 or res.status_code == 429:
                         continue  # transient upstream error or rate limit, keep polling
@@ -180,9 +191,10 @@ class MuapiClient:
                 # Terminal MuAPI errors (auth failure, generation failed, non-5xx
                 # poll failure) propagate immediately.
                 raise
-            except requests.RequestException as err:
-                # Transient network errors are tolerated during the long poll so a
-                # brief outage doesn't abort a multi-minute video job.
+            except (requests.RequestException, ValueError) as err:
+                # Transient network errors — and invalid JSON (e.g. an HTML error
+                # page from a proxy during a brief blip) — are tolerated during
+                # the long poll so a momentary outage doesn't abort a video job.
                 if attempt == max_attempts:
                     raise MuapiError(f"Poll failed: {err}") from err
         raise MuapiError(f"Generation timed out while polling (request_id: {request_id})")
@@ -319,10 +331,7 @@ def main(argv=None):
             return
 
         # Submit; optionally return without polling.
-        res = requests.post(f"{client.base_url}/api/v1/{model}", headers=client._headers(), data=json.dumps(payload))
-        if not res.ok:
-            raise MuapiError(f"MuAPI request failed: {res.status_code} {res.text[:200]}", res.status_code)
-        submit = res.json()
+        submit = client.submit(model, payload)
         request_id = submit.get("request_id") or submit.get("id")
         if not request_id:
             print(json.dumps(client._normalize(None, submit), indent=2))
