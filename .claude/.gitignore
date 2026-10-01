@@ -1,0 +1,10 @@
+# Claude Code local settings
+settings.local.json
+
+# Hooks
+hooks/config/hooks-config.local.json
+hooks/logs/
+
+# Python bytecode (python3 runs hooks.py; py_compile leaves this behind)
+__pycache__/
+*.pyc
