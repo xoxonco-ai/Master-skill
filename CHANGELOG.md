@@ -10,6 +10,14 @@ Sections marked **Ethics** track changes to `ETHICS.md`, content licensing, or b
 
 ## [Unreleased]
 
+### Added — Claude Code agent setup (`.claude/`)
+- Installed the `.claude/` tree and root `.mcp.json` from [shanraisshan/claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice) (commit `20d8f78`, MIT). This repository had no `.claude/` directory before; the 19 `SKILL.md` files under `prebuilt/` and `masters/` are untouched.
+- Added `settings.json` (24 allow / 22 ask permission rules, 30 hook events, status line, `plansDirectory`, `outputStyle`), a cross-platform sound-notification hook system (`hooks/scripts/hooks.py`), two subagents, two slash commands, four runnable demo skills, and one path-scoped memory rule.
+- Added `.mcp.json` declaring the `playwright`, `context7` and `deepwiki` MCP servers.
+- Added `.claude/README.md` (install provenance plus all seven local adaptations) and `.claude/USAGE.zh-TW.md` (Traditional Chinese operating manual).
+- Narrowed the installed `markdown-docs` memory rule from `**/*.md` to an explicit allow-list, so it governs only the files this install ships and cannot start imposing the upstream repo's doc layout on this repository's own markdown.
+- Did not install 21 upstream-only files (the `presentation` and `workflows` families); four of the omitted workflow commands rewrite the upstream repo's `README.md` tables.
+
 ### Added — native desktop manager
 - Added a pure Rust `desktop/` app skeleton using `egui/eframe` as the first native Master-skill Desktop Manager shell.
 - Added Rust models and tests for the CLI JSON contracts consumed by the desktop app.
