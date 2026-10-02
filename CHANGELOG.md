@@ -10,6 +10,9 @@ Sections marked **Ethics** track changes to `ETHICS.md`, content licensing, or b
 
 ## [Unreleased]
 
+### Added — Superpowers plugin auto-install
+- Declared the `obra/superpowers-marketplace` marketplace and enabled `superpowers@superpowers-marketplace` in `.claude/settings.json`, so every Claude Code session (including ephemeral cloud sessions) in this repository installs the [Superpowers](https://github.com/obra/superpowers) workflow skills automatically.
+
 ### Added — Claude Code agent setup (`.claude/`)
 - Installed the `.claude/` tree and root `.mcp.json` from [shanraisshan/claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice) (commit `20d8f78`, MIT). This repository had no `.claude/` directory before; the 19 `SKILL.md` files under `prebuilt/` and `masters/` are untouched.
 - Added `settings.json` (24 allow / 22 ask permission rules, 30 hook events, status line, `plansDirectory`, `outputStyle`), a cross-platform sound-notification hook system (`hooks/scripts/hooks.py`), two subagents, two slash commands, four runnable demo skills, and one path-scoped memory rule.
