@@ -235,6 +235,29 @@ echo '{"hook_event_name":"Stop"}' | python3 .claude/hooks/scripts/hooks.py
 | `enableAllProjectMcpServers` | 自動啟用 `.mcp.json` 的伺服器 | `true` |
 | `disableAllHooks` | 總開關 | `false`（啟用） |
 | `hooks` | 30 個事件全部接到 `hooks.py` | — |
+| `extraKnownMarketplaces` | 註冊外部技能市集（5 個） | ⚠️ 見下方說明 |
+| `enabledPlugins` | 自動啟用的外掛（5 個） | ⚠️ 見下方說明 |
+
+### 那 5 個自動啟用的外掛
+
+這兩個鍵**不是** `claude-code-best-practice` 的一部分，是後來為了跟 `my-frist-project`
+一致而刻意加上的——先由另一個獨立的改動加了 `superpowers`，再補上其餘四個。
+每次在這個 repo 開 Claude Code，下面 5 個第三方市集的技能都會被載入：
+
+| 市集 | 來源 repo | 啟用的外掛 |
+|---|---|---|
+| `superpowers-marketplace` | `obra/superpowers-marketplace` | `superpowers` |
+| `baoyu-skills` | `JimLiu/baoyu-skills` | `baoyu-skills` |
+| `hyperframes` | `heygen-com/hyperframes` | `hyperframes` |
+| `antv-infographic` | `antvis/Infographic` | `antv-infographic-skills` |
+| `caveman` | `JuliusBrussee/caveman` | `caveman` |
+
+這些是**不受這個專案控制的第三方 repo**——它們出什麼，這裡就載入什麼，而且它們一推新版就會變。
+想關掉就把那兩個鍵刪掉；如果只刪 `extraKnownMarketplaces` 裡的某個市集、卻留著
+`enabledPlugins` 裡對應的那一行，就會變成「外掛指向一個不存在的市集」，所以**要成對刪**。
+這套安裝的其他部分不依賴它們，刪掉照樣能用。
+
+用 `/plugin` 可以查看目前載入了哪些外掛。
 
 ### ⚠️ 權限這件事要看一下
 

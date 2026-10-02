@@ -43,11 +43,27 @@ Everything is upstream-verbatim except:
 
 1. **`settings.json`** — dropped the upstream author's personal `spinnerVerbs` and
    `spinnerTipsOverride`; replaced the placeholder `statusLine` with a "directory · branch"
-   command. Also **excluded** `extraKnownMarketplaces` and `enabledPlugins`: those keys exist in
-   the `my-frist-project` copy of this install, but they come from separate, later work that
-   auto-enables four third-party skill marketplaces. They are not part of
-   `claude-code-best-practice` and are not installed here. Add them deliberately if you want
-   them.
+   command.
+
+   `extraKnownMarketplaces` and `enabledPlugins` are **not** from
+   `claude-code-best-practice`. They were added deliberately afterwards, on request, to match
+   the `my-frist-project` copy of this install — `superpowers` first, by its own separate
+   change, then the remaining four. Together they auto-enable five third-party skill
+   marketplaces on every session in this repository:
+
+   | Marketplace | Source repo | Plugin enabled |
+   |---|---|---|
+   | `superpowers-marketplace` | `obra/superpowers-marketplace` | `superpowers` |
+   | `baoyu-skills` | `JimLiu/baoyu-skills` | `baoyu-skills` |
+   | `hyperframes` | `heygen-com/hyperframes` | `hyperframes` |
+   | `antv-infographic` | `antvis/Infographic` | `antv-infographic-skills` |
+   | `caveman` | `JuliusBrussee/caveman` | `caveman` |
+
+   These are third-party repositories outside this project's control: whatever they ship is
+   loaded as skills here, and it changes whenever they push. Remove either key to opt out;
+   removing a marketplace from `extraKnownMarketplaces` without removing its entry from
+   `enabledPlugins` leaves a plugin pointing at an unknown marketplace, so take both out
+   together. The rest of this install works unchanged without them.
 2. **`rules/markdown-docs.md`** — `paths` narrowed from `**/*.md` to an explicit allow-list of
    the files this install ships. Not `.claude/**/*.md`: this repository had no `.claude/`
    before this install, but the moment it gains a skill of its own there, that pattern would
