@@ -465,5 +465,44 @@
         ]
       }
     ]
+  },
+  "extraKnownMarketplaces": {
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
+      }
+    },
+    "baoyu-skills": {
+      "source": {
+        "source": "github",
+        "repo": "JimLiu/baoyu-skills"
+      }
+    },
+    "hyperframes": {
+      "source": {
+        "source": "github",
+        "repo": "heygen-com/hyperframes"
+      }
+    },
+    "antv-infographic": {
+      "source": {
+        "source": "github",
+        "repo": "antvis/Infographic"
+      }
+    },
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "superpowers@superpowers-marketplace": true,
+    "baoyu-skills@baoyu-skills": true,
+    "hyperframes@hyperframes": true,
+    "antv-infographic-skills@antv-infographic": true,
+    "caveman@caveman": true
   }
 }
