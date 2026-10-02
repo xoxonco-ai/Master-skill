@@ -241,7 +241,8 @@ echo '{"hook_event_name":"Stop"}' | python3 .claude/hooks/scripts/hooks.py
 ### 那 5 個自動啟用的外掛
 
 這兩個鍵**不是** `claude-code-best-practice` 的一部分，是後來為了跟 `my-frist-project`
-一致而刻意加上的。每次在這個 repo 開 Claude Code，下面 5 個第三方市集的技能都會被載入：
+一致而刻意加上的——先由另一個獨立的改動加了 `superpowers`，再補上其餘四個。
+每次在這個 repo 開 Claude Code，下面 5 個第三方市集的技能都會被載入：
 
 | 市集 | 來源 repo | 啟用的外掛 |
 |---|---|---|

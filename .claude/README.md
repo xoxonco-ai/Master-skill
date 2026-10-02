@@ -47,7 +47,8 @@ Everything is upstream-verbatim except:
 
    `extraKnownMarketplaces` and `enabledPlugins` are **not** from
    `claude-code-best-practice`. They were added deliberately afterwards, on request, to match
-   the `my-frist-project` copy of this install, and they auto-enable five third-party skill
+   the `my-frist-project` copy of this install — `superpowers` first, by its own separate
+   change, then the remaining four. Together they auto-enable five third-party skill
    marketplaces on every session in this repository:
 
    | Marketplace | Source repo | Plugin enabled |
