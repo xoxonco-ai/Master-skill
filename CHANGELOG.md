@@ -10,6 +10,9 @@ Sections marked **Ethics** track changes to `ETHICS.md`, content licensing, or b
 
 ## [Unreleased]
 
+### Added — Superpowers plugin auto-install
+- Declared the `obra/superpowers-marketplace` marketplace and enabled `superpowers@superpowers-marketplace` in `.claude/settings.json`, so every Claude Code session (including ephemeral cloud sessions) in this repository installs the [Superpowers](https://github.com/obra/superpowers) workflow skills automatically.
+
 ### Added — Claude Code agent setup (`.claude/`)
 - Installed the `.claude/` tree and root `.mcp.json` from [shanraisshan/claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice) (commit `20d8f78`, MIT). This repository had no `.claude/` directory before; the 19 `SKILL.md` files under `prebuilt/` and `masters/` are untouched.
 - Added `settings.json` (24 allow / 22 ask permission rules, 30 hook events, status line, `plansDirectory`, `outputStyle`), a cross-platform sound-notification hook system (`hooks/scripts/hooks.py`), two subagents, two slash commands, four runnable demo skills, and one path-scoped memory rule.
@@ -17,7 +20,7 @@ Sections marked **Ethics** track changes to `ETHICS.md`, content licensing, or b
 - Added `.claude/README.md` (install provenance plus all seven local adaptations) and `.claude/USAGE.zh-TW.md` (Traditional Chinese operating manual).
 - Narrowed the installed `markdown-docs` memory rule from `**/*.md` to an explicit allow-list, so it governs only the files this install ships and cannot start imposing the upstream repo's doc layout on this repository's own markdown.
 - Did not install 21 upstream-only files (the `presentation` and `workflows` families); four of the omitted workflow commands rewrite the upstream repo's `README.md` tables.
-- Enabled five third-party skill marketplaces via `extraKnownMarketplaces` and `enabledPlugins` in `.claude/settings.json`, matching the `my-frist-project` copy of this install: `obra/superpowers-marketplace`, `JimLiu/baoyu-skills`, `heygen-com/hyperframes`, `antvis/Infographic` and `JuliusBrussee/caveman`. These keys are not part of `claude-code-best-practice`; they were initially left out and added afterwards on request. They load skills from repositories outside this project's control, which change whenever those repositories push — `.claude/README.md` and `.claude/USAGE.zh-TW.md` document the trade-off and how to opt back out (remove both keys together). This repository's own `.claude-plugin/` manifest, which declares `master-skill` as a publishable plugin, is untouched.
+- Extended `extraKnownMarketplaces` / `enabledPlugins` in `.claude/settings.json` with four more marketplaces beside the `superpowers` one declared above, matching the `my-frist-project` copy of this install: `JimLiu/baoyu-skills`, `heygen-com/hyperframes`, `antvis/Infographic` and `JuliusBrussee/caveman` — five in total. Neither key is part of `claude-code-best-practice`; both were initially left out of the install and added afterwards on request. They load skills from repositories outside this project's control, which change whenever those repositories push — `.claude/README.md` and `.claude/USAGE.zh-TW.md` document the trade-off and how to opt back out (remove both keys together). This repository's own `.claude-plugin/` manifest, which declares `master-skill` as a publishable plugin, is untouched.
 
 ### Added — native desktop manager
 - Added a pure Rust `desktop/` app skeleton using `egui/eframe` as the first native Master-skill Desktop Manager shell.
